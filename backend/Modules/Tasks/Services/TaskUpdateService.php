@@ -27,6 +27,10 @@ class TaskUpdateService
             throw new Exception('This task does not exist', 404);
         }
 
+        if($task->done == true){
+            throw new Exception('This task can not be updated', 401);
+        }
+
         return $this->task_repository->update($data, $user_id, $id);
     }
 }

@@ -122,4 +122,37 @@ class TaskUpdateServiceTest extends TestCase
 
         $this->assertEquals(new Task($data), $response);
     }
+
+
+    /**
+     * @test
+     * @return void
+     */
+    public function should_return_a_task_done_exception()
+    {
+        $data = [
+            "description" => "abc",
+            "expiration_date" => "12-12-2022",
+            "done" => true,
+            "done_date" => "12-12-2022"
+        ];
+
+        $user_id = 1;
+        $this->task_repository
+            ->shouldReceive('getAll')
+            ->andReturn(new Task($data));
+
+        $this->task_repository
+            ->shouldReceive('find')
+            ->andReturn(new Task($data));
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('This task can not be updated');
+
+        $update_task_service = new TaskUpdateService($this->task_repository);
+
+        $response = $update_task_service->execute($data, $user_id, 2);
+
+        $this->assertEquals(new Task($data), $response);
+    }
 }
