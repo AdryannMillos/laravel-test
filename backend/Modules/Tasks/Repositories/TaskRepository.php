@@ -17,4 +17,14 @@ class TaskRepository
 
         $task->save();
     }
+
+    public function getAllAsAdmin()
+    {
+            return Task::all();
+    }
+
+    public function getAll(int $user_id)
+    {
+        return Task::all()->where('user_id', $user_id);
+    }
 }

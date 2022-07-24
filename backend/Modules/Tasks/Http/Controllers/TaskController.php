@@ -9,14 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\Tasks\Http\Requests\TaskRequest;
 use Modules\Tasks\Services\TaskCreateService;
+use Modules\Tasks\Services\TaskReadService;
 
 class TaskController extends Controller
 {
 
     public function __construct(
-        TaskCreateService $task_create_service
+        TaskCreateService $task_create_service,
+        TaskReadService $task_read_service
     ) {
         $this->task_create_service = $task_create_service;
+        $this->task_read_service = $task_read_service;
     }
 
     /**
@@ -26,7 +29,15 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        try {
+
+            $user_id = Auth::user()->id;
+            $is_admin = Auth::user()->is_admin;
+            $tasks = $this->task_read_service->execute($is_admin, $user_id);
+            return response()->json($tasks, 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
+        }
     }
 
     /**
@@ -38,10 +49,8 @@ class TaskController extends Controller
     public function store(TaskRequest $request)
     {
         try {
-            dd($user_id);
             $user_id = Auth::user()->id;
             $validated = $request->validated();
-            dd($user_id);
             $this->task_create_service->execute($validated, $user_id);
             return response()->json(['message' => 'Task created successfully!'], 201);
         } catch (Exception $e) {

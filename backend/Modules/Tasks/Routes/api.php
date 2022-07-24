@@ -15,4 +15,5 @@ use Modules\Tasks\Http\Controllers\TaskController;
 
 Route::group(['middleware' => ['apiJwt']], function(){
     Route::post('tasks/create', [TaskController::class, 'store']);
+    Route::get('tasks/', [TaskController::class, 'index']);
 });
