@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Users\Http\Controllers\UserController;
+use Modules\Users\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,3 +16,4 @@ use Modules\Users\Http\Controllers\UserController;
 */
 
 Route::post('/users/create', [UserController::class, 'store']);
+Route::post('auth/login', [AuthController::class, 'login']);
