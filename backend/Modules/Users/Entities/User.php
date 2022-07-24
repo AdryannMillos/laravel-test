@@ -15,7 +15,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     *
      */
     protected $fillable = [
         'name',
@@ -26,7 +26,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     *
      */
     protected $hidden = [
         'password',
@@ -50,5 +50,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(\Modules\Tasks\Entities\Task::class, 'user_id');
     }
 }
