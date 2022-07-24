@@ -17,3 +17,7 @@ use Modules\Users\Http\Controllers\AuthController;
 
 Route::post('/users/create', [UserController::class, 'store']);
 Route::post('auth/login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => ['apiJwt']], function(){
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+});
