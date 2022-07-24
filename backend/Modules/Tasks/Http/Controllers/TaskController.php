@@ -10,16 +10,19 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Tasks\Http\Requests\TaskRequest;
 use Modules\Tasks\Services\TaskCreateService;
 use Modules\Tasks\Services\TaskReadService;
+use Modules\Tasks\Services\TaskUpdateService;
 
 class TaskController extends Controller
 {
 
     public function __construct(
         TaskCreateService $task_create_service,
-        TaskReadService $task_read_service
+        TaskReadService $task_read_service,
+        TaskUpdateService $task_update_service
     ) {
         $this->task_create_service = $task_create_service;
         $this->task_read_service = $task_read_service;
+        $this->task_update_service = $task_update_service;
     }
 
     /**
@@ -30,7 +33,6 @@ class TaskController extends Controller
     public function index()
     {
         try {
-
             $user_id = Auth::user()->id;
             $is_admin = Auth::user()->is_admin;
             $tasks = $this->task_read_service->execute($is_admin, $user_id);
@@ -76,9 +78,16 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TaskRequest $request)
     {
-        //
+        try {
+            $user_id = Auth::user()->id;
+            $validated = $request->validated();
+            $this->task_update_service->execute($validated, $user_id, $request->id);
+            return response()->json(['message' => 'Task updated successfully!'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
+        }
     }
 
     /**

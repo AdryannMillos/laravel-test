@@ -20,11 +20,23 @@ class TaskRepository
 
     public function getAllAsAdmin()
     {
-            return Task::all();
+        return Task::all();
     }
 
     public function getAll(int $user_id)
     {
         return Task::all()->where('user_id', $user_id);
+    }
+
+    public function update(array $data, int $user_id, int $id)
+    {
+        return Task::where('user_id', $user_id)
+            ->where('id', $id)
+            ->update($data);
+    }
+
+    public function find(string $info, string $field)
+    {
+        return Task::where($field, $info)->first();
     }
 }

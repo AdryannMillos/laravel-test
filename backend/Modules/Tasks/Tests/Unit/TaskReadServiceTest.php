@@ -52,8 +52,8 @@ class TaskReadServiceTest extends TestCase
             ->shouldReceive('getAll')
             ->andReturn(new Task($data));
 
-        $create_task_service = new TaskReadService($this->task_repository);
-        $responses = $create_task_service->execute($is_admin, $user_id);
+        $read_task_service = new TaskReadService($this->task_repository);
+        $responses = $read_task_service->execute($is_admin, $user_id);
 
         $this->assertInstanceOf(Task::class, $responses);
         $this->assertEquals(new Task($data), $responses);
@@ -81,8 +81,8 @@ class TaskReadServiceTest extends TestCase
             ->shouldReceive('getAllAsAdmin')
             ->andReturn(new Task($data));
 
-        $create_task_service = new TaskReadService($this->task_repository);
-        $responses = $create_task_service->execute($is_admin, $user_id);
+        $read_task_service = new TaskReadService($this->task_repository);
+        $responses = $read_task_service->execute($is_admin, $user_id);
 
         $this->assertInstanceOf(Task::class, $responses);
         $this->assertEquals(new Task($data), $responses);
