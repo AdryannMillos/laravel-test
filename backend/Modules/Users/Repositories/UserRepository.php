@@ -10,7 +10,7 @@ class UserRepository
     {
         return User::where($field, $info)->first();
     }
-    public function store($data)
+    public function store(array $data)
     {
         $user = new User;
         $user->name = $data['name'];

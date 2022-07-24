@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Route;
+use Modules\Tasks\Http\Controllers\TaskController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/tasks', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['apiJwt']], function(){
+    Route::post('tasks/create', [TaskController::class, 'store']);
 });

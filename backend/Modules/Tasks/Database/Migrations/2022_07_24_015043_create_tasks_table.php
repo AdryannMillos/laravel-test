@@ -19,7 +19,7 @@ class CreateTasksTable extends Migration
             $table->string('description');
             $table->string('expiration_date');
             $table->boolean('done')->default(false);
-            $table->string('done_date');
+            $table->string('done_date')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id', 'taus_user_id_foreign')->references('id')->on('users');

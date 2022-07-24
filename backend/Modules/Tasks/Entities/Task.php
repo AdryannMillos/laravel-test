@@ -1,12 +1,13 @@
 <?php
 
-namespace Modules\Users\Entities;
+namespace Modules\Tasks\Entities;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User
+class Task extends Model
 {
     use HasApiTokens, HasFactory, Notifiable;
 
