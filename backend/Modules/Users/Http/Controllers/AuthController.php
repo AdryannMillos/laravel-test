@@ -3,11 +3,10 @@
 namespace Modules\Users\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
 use Exception;
 use Modules\Users\Entities\User;
 use Illuminate\Http\Request;
-use Modules\Users\Http\Requests\LoginRequest as RequestsLoginRequest;
+use Modules\Users\Http\Requests\LoginRequest;
 use Modules\Users\Services\UserLoginService;
 
 class AuthController extends Controller
@@ -30,7 +29,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(RequestsLoginRequest $request)
+    public function login(LoginRequest $request)
     {
         try {
             $validated = $request->validated();

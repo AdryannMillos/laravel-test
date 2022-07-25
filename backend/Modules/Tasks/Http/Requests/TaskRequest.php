@@ -19,7 +19,7 @@ class TaskRequest extends FormRequest
             'description' => 'string|required',
             'expiration_date' => 'string|required',
             'done' => 'boolean|required',
-            'done_date' => 'string',
+            'done_date' => 'string|nullable',
         ];
     }
 

@@ -13,14 +13,14 @@ class TaskRepository
         $task->description = $data['description'];
         $task->expiration_date = $data['expiration_date'];
         $task->done = $data['done'];
-        $task->done_date = '0asd';
+        $task->done_date = $data['done_date'];
 
         $task->save();
     }
 
     public function getAllAsAdmin()
     {
-        return Task::all();
+        return Task::with('user')->get();
     }
 
     public function getAll(int $user_id)
