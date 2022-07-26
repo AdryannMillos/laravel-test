@@ -7,8 +7,14 @@ export default {
     });
   },
 
-  readTasks: (token) => {
-    return http.get("/tasks", {
+  readTasks: (params, token) => {
+    return http.get(`/tasks/?page=${params}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+
+  getAll: (token) => {
+    return http.get(`/tasks`, {
       headers: { Authorization: `Bearer ${token}` },
     });
   },

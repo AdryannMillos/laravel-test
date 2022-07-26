@@ -20,12 +20,13 @@ class TaskRepository
 
     public function getAllAsAdmin()
     {
-        return Task::with('user')->get();
+        $tasks = Task::with('user')->paginate(5);
+        return $tasks;
     }
 
     public function getAll(int $user_id)
     {
-        return Task::all()->where('user_id', $user_id);
+        return ['data'=>Task::all()->where('user_id', $user_id)];
     }
 
     public function update(array $data, int $user_id, int $id)

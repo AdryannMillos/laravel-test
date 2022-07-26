@@ -1,11 +1,10 @@
 <template>
   <div>
     <h1>My Todo</h1>
-    <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
+    <div class="row" v-if="!isAdmin">
         <div class="card login">
           <b>{{ this.error }}</b>
-          <form class="form-group" @submit.prevent="create">
+          <form class="form-group" @submit.prevent="create()">
             <input
               v-model="task.description"
               type="text"
@@ -28,10 +27,8 @@
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
-      </div>
     </div>
     <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-8 mx-auto">
         <div class="card login">
           <h1>Tasks</h1>
           <table class="table table-striped table-bordered table-hover">
@@ -40,14 +37,25 @@
                 <th v-if="isAdmin">Email</th>
                 <th>Description</th>
                 <th>Exp. Date</th>
-                <th>Done Dt.</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody v-for="(task, index) in allTasks" :key="index">
-            <td v-if="isAdmin">{{task.user.email}}</td>
+              <td v-if="isAdmin">{{ task.user.email }}</td>
               <td>
                 <input
+                  v-if="new Date(task.expiration_date) < new Date()"
+                  v-model="task.description"
+                  type="text"
+                  name="description"
+                  id="description"
+                  class="form-control danger"
+                  placeholder="Description"
+                  maxlength="30"
+                  required
+                />
+                <input
+                  v-else
                   v-model="task.description"
                   type="text"
                   name="description"
@@ -69,38 +77,46 @@
                   required
                 />
               </td>
-              <td>
-                <input
-                  v-model="task.done_date"
-                  type="date"
-                  name="description"
-                  id="description"
-                  class="form-control"
-                  placeholder="Description"
-                  required
-                />
-              </td>
-              <td v-if="task.done == false">
+              <td v-if="task.done == false && !isAdmin">
                 <button
                   type="submit"
                   class="btn btn-primary"
                   @click="edit(task)"
                 >
-                  Edit
+                  🖊️
                 </button>
                 <button
                   type="submit"
                   class="btn btn-primary"
                   @click="done(task)"
                 >
-                  Don
+                  ✔️
                 </button>
               </td>
             </tbody>
+            <button v-if="isAdmin" type="submit" class="btn btn-primary" @click="expired()">
+              Expired
+            </button>
+            <button v-if="isAdmin"
+              type="submit"
+              class="btn btn-primary"
+              @click="read(pageParam)"
+            >
+              clear
+            </button>
           </table>
-        </div>
       </div>
     </div>
+    <ul class="pagination justify-content-center">
+      <li v-for="(page, index) of pages" :key="index" class="page-item">
+        <a
+          v-if="!isNaN(page.label)"
+          class="page-link"
+          :href="'/my-todo/?page=' + page.label"
+          >{{ !isNaN(page.label) ? page.label : "" }}</a
+        >
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -121,7 +137,9 @@ export default {
       error: "",
       allTasks: "",
       truthy: true,
-      isAdmin: ""
+      isAdmin: "",
+      pageParam: "",
+      pages: "",
     };
   },
   created() {
@@ -129,7 +147,6 @@ export default {
     if (!this.token) {
       this.$router.push("/");
     }
-    this.read();
   },
   computed: {},
   methods: {
@@ -143,13 +160,15 @@ export default {
           this.error = error.response.data.message;
         });
     },
-    read() {
-      Tasks.readTasks(this.token)
+    read(params) {
+      Tasks.readTasks(params, this.token)
         .then((response) => {
-          this.allTasks = response.data;
-          this.isAdmin = (typeof this.allTasks[0].user !== "undefined" );
+          this.allTasks = response.data.data;
+          this.isAdmin = typeof this.allTasks[0].user !== "undefined";
+          this.pages = response.data.links;
         })
         .catch((error) => {
+            console.error(error);
           this.error = error.response.data.message;
         });
     },
@@ -166,7 +185,7 @@ export default {
     done(task) {
       let today = new Date();
       let year = today.getFullYear();
-      let month = ("0"+(today.getMonth() + 1)).slice(-2);
+      let month = ("0" + (today.getMonth() + 1)).slice(-2);
       let day = today.getDate();
       let date = year + "-" + month + "-" + day;
       task.done = true;
@@ -180,6 +199,18 @@ export default {
           this.error = error.response.data.message;
         });
     },
+    expired() {
+      return (this.allTasks = this.allTasks.filter(
+        (item) => new Date(item.expiration_date) < new Date()
+      ));
+    },
+  },
+  mounted() {
+    this.pageParam = this.$route.query.page;
+    if (!this.pageParam) {
+      this.pageParam = 1;
+    }
+    this.read(this.pageParam);
   },
 };
 </script>
@@ -191,9 +222,12 @@ p {
 
 .card {
   padding: 20px;
-  /* width: 600px; */
+  width: 1000px;
 }
-
+.row {
+  display: flex;
+  justify-content: center;
+}
 .form-group input {
   margin-bottom: 20px;
 }
@@ -202,5 +236,8 @@ p {
 }
 .btn {
   background-color: none;
+}
+.danger {
+  border-color: red;
 }
 </style>
