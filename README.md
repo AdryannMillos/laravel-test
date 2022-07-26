@@ -25,8 +25,8 @@ cd backend; composer install;
 
  php artisan db:seed
 
-- Cria-se um usuário admin na tabela users
-
+- Cria-se um usuário admin na tabela users (email -> adryann312@gmail.com, senha->12Ab@346)
+  
 - Com o comando:
 
 php artisan serve
