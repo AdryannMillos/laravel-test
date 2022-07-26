@@ -22,7 +22,7 @@ class TaskReadServiceTest extends TestCase
         ];
 
         $user = [
-            "email" => "joohn@example.com",
+            "email" => "jooohhn@example.com",
             "password" => "12Ab@346"
         ];
 
