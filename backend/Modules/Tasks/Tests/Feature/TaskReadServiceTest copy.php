@@ -5,13 +5,13 @@ namespace Modules\Users\Tests\Feature;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class TaskCreateServiceTest extends TestCase
+class TaskReadServiceTest extends TestCase
 {
     /**
      *@test
      * @return void
      */
-    public function should_create_a_task_instance()
+    public function should_get_all_tasks_instance()
     {
         $this->withoutMiddleware();
         $data = [
@@ -29,8 +29,8 @@ class TaskCreateServiceTest extends TestCase
         $token = $this->postJson('api/auth/login', $user);
         $token ='Bearer '. $token->getData();
 
-        $response = $this->postJson('api/tasks/create', $data,  ['Authorization' => $token],);
+        $response = $this->getJson('api/tasks', $data,  ['Authorization' => $token],);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 }
